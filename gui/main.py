@@ -2,8 +2,10 @@
 import string
 import tkinter as tk
 
+from nattsud.solver import Solver
+
 CELL_SIZE = 30
-COLOR="white"
+COLOR = "white"
 
 
 def main():
@@ -34,6 +36,8 @@ def main():
 
 def set_start():
     print("START!")
+    solver = Solver
+    solver.set_givens()
 
 
 def calculate():
