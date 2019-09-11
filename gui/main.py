@@ -9,6 +9,7 @@ CELL_SIZE = 30
 COLOR = "white"
 
 cells = dict()
+tk_cells = dict()
 solver = Solver()
 
 
@@ -29,7 +30,7 @@ def main():
     draw_xy_labels_on_canvas(c)
     draw_lines_on_canvas(c)
 
-    cells['a', 1] = tk.IntVar()
+    tk_cells['a', 1] = tk.IntVar()
     put_input_fields_on_canvas(c)
 
     print(main_window.size(), main_window.geometry())
@@ -46,9 +47,17 @@ def create_main_window():
 
 
 def set_start():
-    print("START!")
-    solver.set_givens(cells)
-    start_button['state'] = tk.DISABLED
+    for tk_cell in tk_cells:
+        print(tk_cell)
+        print(tk_cells[tk_cell].get())
+        tk_cells[tk_cell].insert(1, 3)
+        cells[tk_cell] = tk_cells[tk_cell].get()
+    given_cells = solver.set_givens(cells)
+    for cell in given_cells:
+        print("given cell:", cell)
+        tk_cells[cell]['state'] = tk.DISABLED
+    # if given_cells:
+    #     start_button['state'] = tk.DISABLED
 
 
 def calculate_possible_numbers():
@@ -87,15 +96,21 @@ def draw_lines_on_canvas(c):
 
 
 def put_input_fields_on_canvas(c):
-    cells['a', 1] = tk.Spinbox(c,
-                               width=1,
-                               font=Font(size=int(CELL_SIZE/2)),
-                               values=("", 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                               wrap=True,
-                               state='readonly',
-                               readonlybackground=COLOR,
-                               disabledbackground="light grey")
-    c.create_window(CELL_SIZE, CELL_SIZE, window=cells['a', 1], anchor=tk.NW)
+    tk_cells['a', 1] = create_tk_spinbox(c)
+    c.create_window(CELL_SIZE, CELL_SIZE, window=tk_cells['a', 1], anchor=tk.NW)
+    tk_cells['e', 2] = create_tk_spinbox(c)
+    c.create_window(5*CELL_SIZE, 2*CELL_SIZE, window=tk_cells['e', 2], anchor=tk.NW)
+
+
+def create_tk_spinbox(c):
+    return tk.Spinbox(c,
+                      width=1,
+                      font=Font(size=int(CELL_SIZE / 2)),
+                      values=("", 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                      wrap=True,
+                      state='readonly',
+                      readonlybackground=COLOR,
+                      disabledbackground="light grey")
 
 
 def _idx(y):
